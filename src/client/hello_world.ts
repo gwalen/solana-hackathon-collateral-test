@@ -26,7 +26,7 @@ import {newAccountWithLamports} from './util/new-account-with-lamports';
 
 import {
   Token,
-  TOKEN_PROGRAM_ID
+  TOKEN_PROGRAM_ID, u64
 } from "@solana/spl-token";
 
 /**
@@ -40,21 +40,24 @@ let connection: Connection;
 let payerAccount: Account;
 
 /**
- * Accounts below have to be manually created (these are min accounts for CAP)
+ * CAP token mint account
  */
 
-let clientAccount: Account; // client base account that will be used to send SOL to collateral-cap program (has to airdropped)
-// let capMintAccount: Account;  -- not needed here but has to be manually created and send CAP tokens to programCapTokenAccount
-let programCapTokenAccount: PublicKey;  // used as vault where program holds it's CAP tokens
-let clientCapTokenAccount: PublicKey;   // used to send CAP tokens to client after we pass SOL tokens to collateral-cap program
-let programCollateralInfoAccount: Account;   // used to send CAP tokens to client after we pass SOL tokens to collateral-cap program
-
-
+let capMintAccountPubkey: PublicKey;  // -- not needed here but has to be manually created and send CAP tokens to programCapTokenAccount
 
 /**
- * Hello world's program id
+ * Client despising SOL to collateral program
+ */
+let clientAccount: Account; // client base account that will be used to send SOL to collateral-cap program (has to airdropped)
+let clientCapTokenAccountPubkey: PublicKey;   // used to send CAP tokens to client after we pass SOL tokens to collateral-cap program
+//TODO: client wrapped SOl account so we can do transactions using SPL token API
+
+/**
+ * Collateral program id
  */
 let programId: PublicKey;
+let programCapTokenAccountPubkey: PublicKey;  // used as vault where program holds it's CAP tokens
+let programCollateralInfoAccount: Account;   // used to send CAP tokens to client after we pass SOL tokens to collateral-cap program
 
 /**
  * The public key of the account we are saying hello to
@@ -104,22 +107,56 @@ export async function createProgramCollateralInfoAccount(): Promise<void> {
 
   const lamports = await connection.getBalance(programCollateralInfoAccount.publicKey);
   console.log(
-      'programCollateralInfoAccount ',
-      payerAccount.publicKey.toBase58(),
+      'programCollateralInfoAccount',
+      programCollateralInfoAccount.publicKey.toBase58(),
       'containing',
       lamports / LAMPORTS_PER_SOL,
       'Sol to pay for rent',
   );
 }
 
-export async function createTokenAccount(
-    feePayer: string,
-    tokenMintAddress: string,
-    owner: string
-): Promise<PublicKey> {
-  const tokenMintPubkey = new PublicKey(tokenMintAddress);
-  const ownerPubkey = new PublicKey(owner);
+export async function createClientAccount(): Promise<void> {
+  if (!clientAccount) {
+    clientAccount = await newAccountWithLamports(connection, 10 * LAMPORTS_PER_SOL);  // client main account ( with pure SOL)
+  }
 
+  const lamports = await connection.getBalance(programCollateralInfoAccount.publicKey);
+  console.log(
+      'clientAccount',
+      clientAccount.publicKey.toBase58(),
+      'containing',
+      lamports / LAMPORTS_PER_SOL,
+      'Sol on main client account',
+  );
+}
+
+export async function createCapMintAccount(): Promise<void> {
+  if(!capMintAccountPubkey) {
+    // payer here is an overlord we pays for everything he is in god mode, so mint authority is also on him
+    capMintAccountPubkey = await createMintToken(payerAccount.publicKey, 9)
+    console.log(`Crated capMintAccount with pub key: ${capMintAccountPubkey.toString()}`)
+  }
+}
+
+export async function createProgramCapTokenAccount(): Promise<void> {
+  if(!programCapTokenAccountPubkey) {
+    programCapTokenAccountPubkey = await createTokenAccount(capMintAccountPubkey, programId)
+    console.log(`Crated programCapTokenAccount with pub key: ${programCapTokenAccountPubkey.toString()}`)
+  }
+}
+
+export async function createClientCapTokenAccountPubkey(): Promise<void> {
+  if(!clientCapTokenAccountPubkey) {
+    clientCapTokenAccountPubkey = await createTokenAccount(capMintAccountPubkey, clientAccount.publicKey)
+    console.log(`Crated programCapTokenAccount with pub key: ${programCapTokenAccountPubkey.toString()}`)
+  }
+}
+
+
+export async function createTokenAccount(
+    tokenMintPubkey: PublicKey,
+    ownerPubkey: PublicKey
+): Promise<PublicKey> {
     const token = new Token(
         connection,
         tokenMintPubkey,
@@ -129,6 +166,58 @@ export async function createTokenAccount(
 
     const newTokenAccount: PublicKey = await token.createAccount(ownerPubkey);
     return newTokenAccount;
+}
+
+export async function createMintToken(
+    mintAuthority: PublicKey,
+    decimals: number,
+): Promise<PublicKey> {
+  const token = await Token.createMint(
+      connection,
+      payerAccount,
+      mintAuthority,
+      null,  // freezeAuthority ? new PublicKey(freezeAuthority) : null,
+      decimals,
+      TOKEN_PROGRAM_ID
+  );
+  return token.publicKey;
+}
+
+
+export async function mintCapTokenForProgram(amount: u64): Promise<void> {
+  await mintToken(capMintAccountPubkey, programCapTokenAccountPubkey, amount)
+
+  const tokens = await connection.getTokenAccountBalance(programCapTokenAccountPubkey);
+  console.log(
+      `Collateral program token account`,
+      programCapTokenAccountPubkey.toBase58(),
+      'containing',
+      tokens,
+      'CAP tokens',
+  );
+
+}
+
+
+async function mintToken (
+    tokenMintPubkey: PublicKey,
+    destinationPubkey: PublicKey,
+    amount: u64,
+): Promise<void> {
+
+  const token = new Token(
+      connection,
+      tokenMintPubkey,
+      TOKEN_PROGRAM_ID,
+      payerAccount
+  );
+
+  await token.mintTo(
+      destinationPubkey,
+      payerAccount,  // payer account has mint authority
+      [],
+      amount
+  );
 }
 
 
