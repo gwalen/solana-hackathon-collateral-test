@@ -8,6 +8,7 @@ import {
   createProgramCollateralInfoAccount,
   createCapMintAccount,
   createProgramCapTokenAccount,
+  createPdaProgramWrappedSolAccount,
   createPdaProgramCapTokenAccount,
   createClientAccount,
   createClientCapTokenAccountPubkey,
@@ -35,6 +36,7 @@ async function main() {
   await createProgramCollateralInfoAccount()
   await createCapMintAccount() // TODO: how to send and mint tokens using that account ?
   // await createProgramCapTokenAccount()
+  await createPdaProgramWrappedSolAccount()
   await createPdaProgramCapTokenAccount()
   await mintCapTokenForProgram(initialCapTokenAmount)
   await createClientAccount()

@@ -62,6 +62,7 @@ let clientWrappedSolAccountPubkey: PublicKey;   // used to send CAP tokens to cl
  */
 let programId: PublicKey;
 let programCapTokenAccountPubkey: PublicKey;  // used as vault where program holds it's CAP tokens
+let programWrappedSolAccountPubkey: PublicKey;  // used as collateral storage
 let programCollateralInfoAccount: Account;   // used to send CAP tokens to client after we pass SOL tokens to collateral-cap program
 
 const pathToProgram = 'dist/program/helloworld.so';
@@ -277,8 +278,10 @@ export async function callCollateralDepositSol(depositAmount: number): Promise<v
     keys: [
         {pubkey: clientAccount.publicKey, isSigner: true, isWritable: true},
         {pubkey: clientCapTokenAccountPubkey, isSigner: false, isWritable: true},
+        {pubkey: clientWrappedSolAccountPubkey, isSigner: false, isWritable: true},
         {pubkey: programCollateralInfoAccount.publicKey, isSigner: false, isWritable: true},
         {pubkey: programCapTokenAccountPubkey, isSigner: false, isWritable: true},
+        {pubkey: programWrappedSolAccountPubkey, isSigner: false, isWritable: true},
         {pubkey: PDA[0], isSigner: false, isWritable: false},
         {pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
     ],
@@ -454,3 +457,65 @@ export async function createPdaProgramCapTokenAccount(): Promise<void> {
   console.log(`V3: Is Pda owner of coins on programCapTokenAccount: ${isOwner}, owner pub key : ${programCapTokenAccountInfo.owner.toBase58()}`)
 }
 
+export async function createPdaProgramWrappedSolAccount(): Promise<void> {
+  const PDA = await PublicKey.findProgramAddress([Buffer.from("capCollateral")], programId);
+  programWrappedSolAccountPubkey = await createTokenAccount(wrappedSolMintPubkey, PDA[0])
+  console.log(`Crated program WrappedSol Account with pub key: ${programWrappedSolAccountPubkey.toString()}`)
+  await sleep(1000); // wait for token inti in the network  -- eventual consistency effect
+  const token = new Token(
+      connection,
+      wrappedSolMintPubkey,
+      TOKEN_PROGRAM_ID,
+      payerAccount  // payer for fee
+  );
+  const programWrappedSolAccountInfo = await token.getAccountInfo(programWrappedSolAccountPubkey);
+  const isOwner = programWrappedSolAccountInfo?.owner.equals(PDA[0])
+  console.log(`V3: Is Pda owner of coins on program WrappedSol Account: ${isOwner}, owner pub key : ${programWrappedSolAccountInfo.owner.toBase58()}`)
+}
+
+/*
+export async function createProgramWrappedSolAccount(): Promise<void> {
+  const programWrappedSolAccount = new Account();
+  const balanceNeededForRent = await Token.getMinBalanceRentForExemptAccount(connection);
+  const createWrappedSolAccountIx = SystemProgram.createAccount({
+    fromPubkey: payerAccount.publicKey,       //payer account
+    newAccountPubkey: programWrappedSolAccount.publicKey,
+    lamports: balanceNeededForRent,
+    space: AccountLayout.span,
+    programId: TOKEN_PROGRAM_ID
+  });
+
+  const createTokenAccountIx = Token.createInitAccountInstruction(
+      TOKEN_PROGRAM_ID,
+      wrappedSolMintPubkey,
+      programWrappedSolAccount.publicKey,
+      clientAccount.publicKey  // owner
+  );
+
+  clientWrappedSolAccountPubkey = programWrappedSolAccount.publicKey
+
+  const tx = new Transaction().add(createWrappedSolAccountIx, createTokenAccountIx);
+  await connection.sendTransaction(tx, [payerAccount, programWrappedSolAccount], {skipPreflight: false, preflightCommitment: 'singleGossip'});
+
+  console.log("Wait for client SOL account create transaction")
+  await sleep(1000);
+
+  const token = new Token(
+      connection,
+      wrappedSolMintPubkey,
+      TOKEN_PROGRAM_ID,
+      payerAccount  // payer for fee
+  );
+  const tokens = await connection.getTokenAccountBalance(clientWrappedSolAccountPubkey);
+  const clientWrappedSolAccountInfo = await token.getAccountInfo(clientWrappedSolAccountPubkey);
+  console.log(
+      'clientWrappedSolAccount',
+      clientWrappedSolAccountPubkey.toBase58(),
+      'containing',
+      tokens.value.uiAmount,
+      'wrapped Sol,',
+      'owner',
+      clientWrappedSolAccountInfo.owner.toBase58()
+  );
+}
+ */
