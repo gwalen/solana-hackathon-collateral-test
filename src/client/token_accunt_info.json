@@ -1,0 +1,47 @@
+{
+  "jsonrpc": "2.0",
+  "result": {
+    "context": {
+      "slot": 69972
+    },
+    "value": {
+      "data": {
+        "parsed": {
+          "info": {
+            "isNative": false,
+            "mint": "HxtWbqU8JrPVJgdSGcKiwb71YkKTCaDeLH7C9dz3Q7CJ",
+            "owner": "6jwnrRu5emMXCm5wiK2BDrpePc7aXr6piDLrHKQZN4Hg",
+            "state": "initialized",
+            "tokenAmount": {
+              "amount": "100000000000",
+              "decimals": 9,
+              "uiAmount": 100.0
+            }
+          },
+          "type": "account"
+        },
+        "program": "spl-token",
+        "space": 165
+      },
+      "executable": false,
+      "lamports": 2039280,
+      "owner": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      "rentEpoch": 0
+    }
+  },
+  "id": 1
+}
+
+Output from cli :
+
+~ spl-token account-info 25JPmh4hnTyiVu6s1EjNjLsTLJfRUNqgcrm3dAhMpWfn
+Address: 25JPmh4hnTyiVu6s1EjNjLsTLJfRUNqgcrm3dAhMpWfn
+Balance: 100
+Mint: HxtWbqU8JrPVJgdSGcKiwb71YkKTCaDeLH7C9dz3Q7CJ
+Owner: 6jwnrRu5emMXCm5wiK2BDrpePc7aXr6piDLrHKQZN4Hg
+State: Initialized
+Delegation: (not set)
+Close authority: (not set)
+
+
+Owner for token account (info stored inside the data field) is not the same as owner of the account that holds this token

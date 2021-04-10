@@ -8,12 +8,14 @@ import {
   createProgramCollateralInfoAccount,
   createCapMintAccount,
   createProgramCapTokenAccount,
+  createPdaProgramCapTokenAccount,
   createClientAccount,
   createClientCapTokenAccountPubkey,
   loadProgram,
-  sayHello,
+  callCollateralDepositSol,
   reportHellos,
   mintCapTokenForProgram,
+  createClientWrappedSolAccount
 } from './hello_world';
 import {u64} from "@solana/spl-token";
 
@@ -26,22 +28,23 @@ async function main() {
   // Determine who pays for the fees
   await createInitialPayerAccount();
 
-  const initialCapTokenAmount = u64.fromBuffer(Buffer.from('10'));
-  // const initialCapTokenAmount = u64.fromBuffer(Buffer.from([100]));
-  console.log(`XXX initialCapTokenAmount = ${initialCapTokenAmount.toString()}`)
-
-  await createProgramCollateralInfoAccount()
-  await createCapMintAccount() // TODO: how to send and mint tokens using that account ?
-  await createProgramCapTokenAccount()
-  await mintCapTokenForProgram(initialCapTokenAmount)
-  await createClientAccount()
-  await createClientCapTokenAccountPubkey()
+  const initialCapTokenAmount = 100;
 
   // Load the program if not already loaded
   await loadProgram();
 
-  // Say hello to an account
-  // await sayHello();
+  await createProgramCollateralInfoAccount()
+  await createCapMintAccount() // TODO: how to send and mint tokens using that account ?
+  // await createProgramCapTokenAccount()
+  await createPdaProgramCapTokenAccount()
+  await mintCapTokenForProgram(initialCapTokenAmount)
+  await createClientAccount()
+  await createClientWrappedSolAccount()
+  await createClientCapTokenAccountPubkey()
+
+
+  // deposit sol
+  await callCollateralDepositSol(1);
 
   // Find out how many times that account has been greeted
   // await reportHellos();

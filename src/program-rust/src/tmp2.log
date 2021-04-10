@@ -1,0 +1,35 @@
+DEBUG solana_runtime::bank] distributed rent: 0 (rounded from: 0, burned: 0)
+INFO  solana_runtime::bank] bank frozen: 0 hash: 5V2qrahRJYFHGFWPwWEj9ENKtNraUq3gjneKuLfu2fv1 accounts_delta: iEwCmibCzTfFNuxuQCyFB6Hrz4JU4yvauGx14bpSVyB signature_count: 0 last_blockhash: 5YgcVBGm2QTs36DmLaabT7wMG6E4HLHntd4CoMFNVfLF capitalization: 503000501039101298
+INFO  solana_runtime::bank] accounts hash slot: 0 stats: BankHashStats { num_updated_accounts: 67, num_removed_accounts: 0, num_lamports_stored: 503000501039101300, total_data_len: 472490, num_executable_accounts: 12 }
+DEBUG solana_runtime::bank] processing transactions: 1
+DEBUG solana_runtime::bank] load: 11us execute: 72us txs_len=1
+DEBUG solana_runtime::bank] store: 35us txs_len=1
+DEBUG solana_runtime::bank] processing transactions: 1
+DEBUG solana_runtime::bank] load: 24us execute: 15us txs_len=1
+DEBUG solana_runtime::bank] tx error: Err(DuplicateSignature) Transaction { signatures: [5kYEw8Xk18Rji2B2nNVX8oz5ifHb9AvUn87YskzRM2tqsPEaEptG4zKwej9D1NzeS2iaWpuG1t1wK2T6ZoRmQieG, r6KvC43mc7QxRRzJVB4az9wWD9a8hAVjXSZqUeVpQ3TkAbq5VxPfhqmFs35bQvy3231EmiDggPL1HdNy4iVVy42], message: Message { header: MessageHeader { num_required_signatures: 2, num_readonly_signed_accounts: 0, num_readonly_unsigned_accounts: 3 }, account_keys: [ENvaT41bBtqRhBhY3Xz2Y7YSorBQGAnmwxSAXHhDc1Ce, EoH57S5CXe2Vrq6QA6oHR89FZSNcT32JFnHz4kugjiDW, SysvarS1otHashes111111111111111111111111111, SysvarC1ock11111111111111111111111111111111, Vote111111111111111111111111111111111111111], recent_blockhash: 5YgcVBGm2QTs36DmLaabT7wMG6E4HLHntd4CoMFNVfLF, instructions: [CompiledInstruction { program_id_index: 4, accounts: [1, 2, 3, 1], data: [2, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 66, 157, 23, 238, 127, 44, 105, 246, 233, 143, 206, 158, 19, 7, 139, 118, 121, 26, 131, 200, 136, 43, 65, 56, 178, 97, 91, 124, 112, 36, 23, 66, 1, 255, 144, 87, 96, 0, 0, 0, 0] }] } }
+DEBUG solana_runtime::bank] 1 errors of 1 txs
+DEBUG solana_runtime::bank] distributed rent: 0 (rounded from: 0, burned: 0)
+INFO  solana_runtime::bank] bank frozen: 1 hash: geL7WrwocojxjSkfFQCW3GtM5WmsX2cJsbKtCyo9YwX accounts_delta: 66c27Jvc6ajUJRma2phaw4TvaYvKq9ScH9UbYv9c5FPb signature_count: 2 last_blockhash: 9TLsUm6T22ekRrMoL4arqwh4J6WVSjhfonUipA6VKLCc capitalization: 503000501039101299
+INFO  solana_runtime::bank] accounts hash slot: 1 stats: BankHashStats { num_updated_accounts: 7, num_removed_accounts: 0, num_lamports_stored: 1000500000000005, total_data_len: 161372, num_executable_accounts: 0 }
+DEBUG solana_runtime::bank] processing transactions: 1
+DEBUG solana_runtime::bank] load: 32us execute: 145us txs_len=1
+DEBUG solana_runtime::bank] store: 94us txs_len=1
+DEBUG solana_runtime::bank] processing transactions: 1
+DEBUG solana_runtime::bank] load: 10us execute: 3us txs_len=1
+DEBUG solana_runtime::bank] tx error: Err(DuplicateSignature) Transaction { signatures: [5BPA1QCjE5jw5AZSEx6xfkNdAwsW2rL3YdQkc42c8sfEE9p5PeRn5YiLCzvBfNbLRpFQZdKjENnaBbrcbadQpkwq, 4MFkUz57paZkySUqhejHQTez632KGYk7MYV4NqMc9ptoZHaW8uJ5NoaPe7sTqWvq5bDVUyQ4PvcXWYLH4WQum3aD], message: Message { header: MessageHeader { num_required_signatures: 2, num_readonly_signed_accounts: 0, num_readonly_unsigned_accounts: 3 }, account_keys: [ENvaT41bBtqRhBhY3Xz2Y7YSorBQGAnmwxSAXHhDc1Ce, EoH57S5CXe2Vrq6QA6oHR89FZSNcT32JFnHz4kugjiDW, SysvarS1otHashes111111111111111111111111111, SysvarC1ock11111111111111111111111111111111, Vote111111111111111111111111111111111111111], recent_blockhash: 9TLsUm6T22ekRrMoL4arqwh4J6WVSjhfonUipA6VKLCc, instructions: [CompiledInstruction { program_id_index: 4, accounts: [1, 2, 3, 1], data: [2, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 10, 39, 220, 52, 193, 37, 169, 46, 165, 245, 88, 221, 65, 215, 91, 242, 189, 157, 65, 29, 215, 244, 1, 172, 244, 119, 65, 48, 183, 60, 107, 22, 1, 255, 144, 87, 96, 0, 0, 0, 0] }] } }
+DEBUG solana_runtime::bank] 1 errors of 1 txs
+DEBUG solana_runtime::bank] distributed fee: 5000 (rounded from: 10000, burned: 5000)
+DEBUG solana_runtime::bank] distributed rent: 0 (rounded from: 0, burned: 0)
+INFO  solana_runtime::bank] bank frozen: 2 hash: Br9BUGHFvRJJXYXBWqTAEwCR6sHPzKE4yDQB4JRkihNS accounts_delta: BC2zqNsFtKdgiSJkLWXnXhYhaEqawtU6U6JS6EhnfXbV signature_count: 2 last_blockhash: GnTW6FqKzBZUqTPveGBKUEZ5NRRZpGk7cAchzy8UFNMx capitalization: 503000501039096299
+INFO  solana_runtime::bank] accounts hash slot: 2 stats: BankHashStats { num_updated_accounts: 8, num_removed_accounts: 0, num_lamports_stored: 1000999999985005, total_data_len: 161372, num_executable_accounts: 0 }
+DEBUG solana_runtime::bank] processing transactions: 1
+DEBUG solana_runtime::bank] load: 31us execute: 114us txs_len=1
+DEBUG solana_runtime::bank] store: 110us txs_len=1
+DEBUG solana_runtime::bank] processing transactions: 1
+DEBUG solana_runtime::bank] load: 16us execute: 2us txs_len=1
+DEBUG solana_runtime::bank] tx error: Err(DuplicateSignature) Transaction { signatures: [5CXyS6tfWP4gsuoZf2qP2kPCGKw82P9KQLEzT1gdnmDDuE92rGuC6gGhLvKxRjxAmvisgCyiEqMnH3ha1qErtCrv, P7au8LUeRGuFUPqh6YVaAEeDDzBMwkxQKj6SpPr5JeAk4PpMpmgYvE2wyxkuKh9wM9wJuAadPfyC5fBgjk5XkUM], message: Message { header: MessageHeader { num_required_signatures: 2, num_readonly_signed_accounts: 0, num_readonly_unsigned_accounts: 3 }, account_keys: [ENvaT41bBtqRhBhY3Xz2Y7YSorBQGAnmwxSAXHhDc1Ce, EoH57S5CXe2Vrq6QA6oHR89FZSNcT32JFnHz4kugjiDW, SysvarS1otHashes111111111111111111111111111, SysvarC1ock11111111111111111111111111111111, Vote111111111111111111111111111111111111111], recent_blockhash: GnTW6FqKzBZUqTPveGBKUEZ5NRRZpGk7cAchzy8UFNMx, instructions: [CompiledInstruction { program_id_index: 4, accounts: [1, 2, 3, 1], data: [2, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 161, 43, 148, 34, 98, 235, 225, 166, 4, 102, 64, 119, 243, 36, 87, 34, 90, 33, 35, 172, 248, 145, 19, 98, 161, 140, 50, 252, 197, 253, 197, 83, 1, 255, 144, 87, 96, 0, 0, 0, 0] }] } }
+DEBUG solana_runtime::bank] 1 errors of 1 txs
+DEBUG solana_runtime::bank] distributed fee: 5000 (rounded from: 10000, burned: 5000)
+DEBUG solana_runtime::bank] distributed rent: 0 (rounded from: 0, burned: 0)
+INFO  solana_runtime::bank] bank frozen: 3 hash: BpZWn57BG4XqS3pZtarhzc9KiYcFzYS5nPUF4rv8EQyV accounts_delta: BZb9LcbkNmHFddXFD4Njv2CBuoZCTSkoUPHmrqGGxi9u signature_count: 2 last_blockhash: 6iHDUNa74JqmiJThnY4b1H5dSKRKgEy1xJTEG2q5opZy capitalization: 503000501039091299
+INFO  solana_runtime::bank] accounts hash slot: 3 stats: BankHashStats { num_updated_accounts: 8, num_removed_accounts: 0, num_lamports_stored: 1000999999975005, total_data_len: 161372, num_executable_accounts: 0 }

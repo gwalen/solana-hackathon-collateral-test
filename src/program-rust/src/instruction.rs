@@ -33,17 +33,25 @@ impl CappuccinoInstruction {
     pub fn unpack(input: &[u8]) -> Result<Self, ProgramError> {
         let (tag, rest) = input.split_first().ok_or(ProgramError::InvalidArgument)?;
 
-        let function_name = from_utf8(input).map_err(|err| {
-            msg!("Invalid UTF-8, from byte {}", err.valid_up_to());
-            ProgramError::InvalidInstructionData // TODO: own error wrong instruction type
-        })?;
+        // let function_name = from_utf8(input).map_err(|err| {
+        //     msg!("Invalid UTF-8, from byte {}", err.valid_up_to());
+        //     ProgramError::InvalidInstructionData // TODO: own error wrong instruction type
+        // })?;
 
-        Ok(match function_name {
-            "deposit" => Self::DepositSolForCap {
+        // Ok(match function_name {
+        //     "deposit" => Self::DepositSolForCap {
+        //         amount: Self::unpack_amount(rest)?,
+        //     },
+        //     "check_collaterals" => Self::CheckCollaterals,
+        //     _ => return Err(ProgramError::InvalidArgument.into())
+        // })
+
+        Ok(match tag {
+            0 => Self::DepositSolForCap {
                 amount: Self::unpack_amount(rest)?,
             },
-            "check_collaterals" => Self::CheckCollaterals,
-            _ => return Err(ProgramError::InvalidArgument.into()), //TODO: what into() is doing ?
+            1 => Self::CheckCollaterals,
+            _ => return Err(ProgramError::InvalidArgument.into()),
         })
     }
 
