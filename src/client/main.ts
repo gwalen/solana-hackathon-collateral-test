@@ -13,7 +13,6 @@ import {
   createClientCapTokenAccountPubkey,
   loadProgram,
   callCollateralDepositSol,
-  reportHellos,
   mintCapTokenForProgram,
   createClientWrappedSolAccount
 } from './hello_world';
@@ -42,12 +41,8 @@ async function main() {
   await createClientWrappedSolAccount()
   await createClientCapTokenAccountPubkey()
 
-
   // deposit sol
   await callCollateralDepositSol(1);
-
-  // Find out how many times that account has been greeted
-  // await reportHellos();
 
   console.log('Success');
 }

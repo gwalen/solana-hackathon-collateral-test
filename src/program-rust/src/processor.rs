@@ -158,7 +158,7 @@ impl Processor {
         // Q1 : is invoke only checking if this transaction signer (here clientAccount) can invoke the instruction
         //      will also check owner allowed to make instruction is in the provided accounts ?
         // what when program is the owner
-        msg!("Calling the token program to transfer SOL tokens from client to collateral program sol amount = {}", amount_sol);
+        msg!("Calling the token program to transfer CAP tokens from collateral program to client sol amount = {}", client_collateralized_cap);
         invoke_signed(
             &transfer_cap_to_client_ix,
                 &[

@@ -64,11 +64,6 @@ let programId: PublicKey;
 let programCapTokenAccountPubkey: PublicKey;  // used as vault where program holds it's CAP tokens
 let programCollateralInfoAccount: Account;   // used to send CAP tokens to client after we pass SOL tokens to collateral-cap program
 
-/**
- * The public key of the account we are saying hello to
- */
-let greetedPubkey: PublicKey;
-
 const pathToProgram = 'dist/program/helloworld.so';
 
 const payerIInitialSolAmount = 100
@@ -107,6 +102,7 @@ export async function createInitialPayerAccount(): Promise<void> {
   );
 }
 
+
 // main client account to which other are attached (wraped SOL and CAP token accounts)
 export async function createClientAccount(): Promise<void> {
   if (!clientAccount) {
@@ -122,6 +118,7 @@ export async function createClientAccount(): Promise<void> {
       'Sol on main client account',
   );
 }
+
 
 export async function createClientWrappedSolAccount(): Promise<void> {
   const clientWrappedSolAccount = new Account();
@@ -178,6 +175,7 @@ export async function createCapMintAccount(): Promise<void> {
   }
 }
 
+
 export async function createMintToken(
     mintAuthority: PublicKey,
     decimals: number,
@@ -207,7 +205,6 @@ export async function mintCapTokenForProgram(amount: number): Promise<void> {
       tokens,
       'CAP tokens',
   );
-
 }
 
 
@@ -243,7 +240,6 @@ export async function loadProgram(): Promise<void> {
   try {
     const config = await store.load('config.json');
     programId = new PublicKey(config.programId);
-    greetedPubkey = new PublicKey(config.greetedPubkey);
     await connection.getAccountInfo(programId);
     console.log('Program already loaded to account', programId.toBase58());
     return;
@@ -265,44 +261,14 @@ export async function loadProgram(): Promise<void> {
   programId = programAccount.publicKey;
   console.log('Program loaded to account', programId.toBase58());
 
-  // Create the greeted account
-  const greetedAccount = new Account();
-  greetedPubkey = greetedAccount.publicKey;
-  console.log('Creating account', greetedPubkey.toBase58(), 'to say hello to');
-  const space = greetedAccountDataLayout.span;
-  const lamports = await connection.getMinimumBalanceForRentExemption(
-    greetedAccountDataLayout.span,
-  );
-  const transaction = new Transaction().add(
-    SystemProgram.createAccount({
-      fromPubkey: payerAccount.publicKey,
-      newAccountPubkey: greetedPubkey,
-      lamports,
-      space,
-      programId,
-    }),
-  );
-  await sendAndConfirmTransaction(
-    connection,
-    transaction,
-    [payerAccount, greetedAccount],
-    {
-      commitment: 'singleGossip',
-      preflightCommitment: 'singleGossip',
-    },
-  );
-
   // Save this info for next time
   await store.save('config.json', {
     url: urlTls,
-    programId: programId.toBase58(),
-    greetedPubkey: greetedPubkey.toBase58(),
+    programId: programId.toBase58()
   });
 }
 
-/**
- * Say hello
- */
+
 export async function callCollateralDepositSol(depositAmount: number): Promise<void> {
   const depositAmountSol = depositAmount * LAMPORTS_PER_SOL;
   const PDA = await PublicKey.findProgramAddress([Buffer.from("capCollateral")], programId);
@@ -335,6 +301,7 @@ export async function callCollateralDepositSol(depositAmount: number): Promise<v
 /**
  * Report the number of times the greeted account has been said hello to
  */
+/*
 export async function reportHellos(): Promise<void> {
   const accountInfo = await connection.getAccountInfo(greetedPubkey);
   if (accountInfo === null) {
@@ -348,8 +315,7 @@ export async function reportHellos(): Promise<void> {
     'times',
   );
 }
-
-
+ */
 
 export async function createProgramCollateralInfoAccount(): Promise<void> {
   programCollateralInfoAccount = new Account();
@@ -382,20 +348,6 @@ export async function createProgramCollateralInfoAccount(): Promise<void> {
 
 }
 
-// export async function createProgramCollateralInfoAccount(): Promise<void> {
-//   if (!programCollateralInfoAccount) {
-//     programCollateralInfoAccount = await newAccountWithLamports(connection, 5 * LAMPORTS_PER_SOL);  // some sol so the account can pay it's rent
-//   }
-//
-//   const lamports = await connection.getBalance(programCollateralInfoAccount.publicKey);
-//   console.log(
-//       'programCollateralInfoAccount',
-//       programCollateralInfoAccount.publicKey.toBase58(),
-//       'containing',
-//       lamports / LAMPORTS_PER_SOL,
-//       'Sol to pay for rent',
-//   );
-// }
 
 export async function createClientCapTokenAccountPubkey(): Promise<void> {
   if(!clientCapTokenAccountPubkey) {
@@ -403,6 +355,7 @@ export async function createClientCapTokenAccountPubkey(): Promise<void> {
     console.log(`Crated clientCapTokenAccount with pub key: ${programCapTokenAccountPubkey.toString()}`)
   }
 }
+
 
 // based on : https://github.com/paul-schaaf/spl-token-ui/blob/ee7c32c9fd579f1e9f543981b8cad39d10a17d43/src/solana/token/index.ts
 async function createTokenAccount(
@@ -499,26 +452,5 @@ export async function createPdaProgramCapTokenAccount(): Promise<void> {
   const programCapTokenAccountInfo = await token.getAccountInfo(programCapTokenAccountPubkey);
   const isOwner = programCapTokenAccountInfo?.owner.equals(PDA[0])
   console.log(`V3: Is Pda owner of coins on programCapTokenAccount: ${isOwner}, owner pub key : ${programCapTokenAccountInfo.owner.toBase58()}`)
-}
-
-/////////////////
-
-export async function setOwnershipToPda(): Promise<void> {
-  const PDA = await PublicKey.findProgramAddress([Buffer.from("capCollateral")], programId);
-
-  const token = new Token(
-      connection,
-      capMintAccountPubkey,
-      TOKEN_PROGRAM_ID,
-      payerAccount  // payer for fee
-  );
-
-  await token.setAuthority(
-      capMintAccountPubkey,
-      PDA[0],
-      'AccountOwner',
-      programId,
-      []
-  );
 }
 
